@@ -1,0 +1,150 @@
+OficinaApp.java
+import java.util.*;
+
+class Cliente{
+    String nome;
+    List<Veiculo> veiculos = new ArrayList<>();
+
+    public Cliente(String nome){
+        this.nome = nome; 
+    }
+
+    public void adicionarVeiculo(Veiculo v){
+        veiculos.add(v);
+    }
+}
+
+abstract class Veiculo{
+    String modelo;
+    String marca;
+    boolean emServico;
+
+    public Veiculo(String modelo,String marca){
+        this.modelo = modelo;
+        this.marca = marca;
+        this.emServico = false;
+    }
+
+    public abstract void trocarPeca();
+
+    public void trocarOleo(){
+        System.out.println("Troca de oleo realizada em:" + modelo);
+    }
+}
+
+class Carro extends Veiculo{
+    public Carro(String modelo, String marca){
+        super(modelo,marca);
+    }
+
+    @override
+    public void trocarPeca(){
+        System.out.println("Trocando peça de carro: " + modelo);
+    }
+}
+
+class Moto extends Veiculo{
+    public Moto(String modelo, String marca){
+        super(modelo,marca);
+    }
+
+    @override
+    public void trocarPeca(){
+        System.out.println("Trocando peça de moto: " + modelo);
+    }
+}
+
+class Mecanico{
+    String nome;
+    boolean disponivel = true;
+
+    public Mecanico(String nome) {
+        this.nome = nome;
+    }
+}
+
+class Oficina {
+    List<Cliente> clientes = new ArrayList<>();
+    List<Mecanico> mecanicos = new ArrayList<>();
+
+    public void cadastrarCliente(Cliente cliente) {
+        clientes.add(cliente);
+    }
+
+    public void cadastrarMecanico(Mecanico mecanico) {
+        mecanicos.add(mecanico);
+    }
+
+    public Veiculo buscarVeiculoPorModelo(String modelo){
+        for (Cliente c : clientes) {
+            for (Veiculo v : veiculos) {
+                if(v.modelo.equalsIgnoreCase(modelo)) {
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Veiculo buscarVeiculoPorModelo(String marca){
+        for (Cliente c : clientes) {
+            for (Veiculo v : veiculos) {
+                if(v.marca.equalsIgnoreCase(marca)) {
+                    return v;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void registrarEntrada(Veiculo v) {
+        v.emServico = true;
+        System.out.println("Veiculo" + v.modelo + "entrou em serviço.");
+    }
+
+    public void registarSaida(Veiculo v){
+        v.emServico = false;
+        System.out.println("Veiculo" + v.modelo + "saiu de serviço.")
+    }
+
+    public Mecanico verificarMecanicoDisponivel(){
+        for (Mecanico m : mecanicos) {
+            if (m.disponivel) {
+                return m;
+            }
+        }
+        return null;
+    }
+}
+
+public class OficinaApp {
+    public static void main(String[] args) {
+        Oficina oficina = new Oficina()
+
+        Cliente joao = new Cliente("João");
+        Carro carro = new Carro("Ford","Fiesta");
+        Moto moto = new Moto("Cb500","Honda");
+
+        joao.adicionarVeiculo(carro);
+        joao.adicionarVeiculo(moto);
+
+        oficina.cadastrarCliente(joao);
+        oficina.cadastrarMecanico(new mecanico("Pedro"));
+
+        Veiculo v1 = oficina.buscarVeiculoPorModelo("Fiesta");
+        if (v1 != null) {
+            oficina.registrarEntrada(v1);
+            v1.trocarOleo();
+            v1.trocarPeca();
+            oficina.registarSaida(v1);
+        }
+
+        Mecanico mecanicoDisponivel = oficina.verificarMecanicoDisponivel();
+        if (mecanicoDisponivel != null) {
+            System.out.println("Mecanico Disponivel: " + mecanicoDisponivel.nome);
+        }
+        else {
+            System.out.println("Nenhum mecanico disponivel.");
+        }
+    }
+}
